@@ -1,0 +1,13 @@
+
+The fantastic GpedToGpx script creates a lot of points.  My poor old garmin cannot handle that many points so this script parses the points and incrementally removes them.
+
+This is a work in progress.
+
+To Do:
+
+1. Fix the turn calculation
+2. don't hardcode the input
+3. Output the resut into xml
+4. Work out how to link it to the script
+
+
