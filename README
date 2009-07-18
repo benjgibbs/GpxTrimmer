@@ -5,9 +5,10 @@ This is a work in progress.
 
 To Do:
 
-1. Fix the turn calculation
-2. don't hardcode the input
-3. Output the resut into xml
-4. Work out how to link it to the script
+* Fix the turn calculation - still somehting strange going on here
+* don't hardcode the input
+* Work out how to link it to the script
 
+Done:
+* Output the resut into xml
 
