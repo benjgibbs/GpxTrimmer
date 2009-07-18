@@ -14,7 +14,7 @@ object GpxTrimmer {
 
     val inFile="/Users/benjgibbs/Desktop/toLyndhurst.gpx"
     val outFile=inFile.replace(".gpx", "_truncated.gpx")
-    val name="To Lyndhurst"
+    val rteName="To Lyndhurst"
     
     val xml = XML.loadFile("/Users/benjgibbs/Desktop/toLyndhurst.gpx")
 
@@ -23,7 +23,9 @@ object GpxTrimmer {
     for(x <- (xml \ "rte" \ "rtept"))
       allPoints = Point(pos(x,"lat"), pos(x,"lon"), name(x)) :: allPoints
 
-    XML.save(outFile,updateXml(xml,name,filterPoints(allPoints.reverse)))
+    println(allPoints.reverse)
+
+    XML.save(outFile,updateXml(xml,rteName,filterPoints(allPoints.reverse)))
     println("Wrote: " + outFile)
   }
   
@@ -43,14 +45,15 @@ object GpxTrimmer {
 
   def filterPoints(allPoints: List[Point]) = {  
     var minTurn = 10.0
-    val turnInc = 1.0
+    val turnInc = 0.1
     var points = allPoints
     
     def runThrough(points: List[Point]) :List[Point]= {
         points match {  
         case x :: y :: z :: rest =>
-          if(y.equals(z)) x :: z :: runThrough(rest)
-          else if(x.equals(y)||turnIsLessThan(x,y,z,minTurn)) x :: z :: runThrough(rest)
+          if(x==y||y==z) runThrough(x :: z :: rest)
+          else if(x==z) runThrough(rest)
+          else if(turnIsLessThan(x,y,z,minTurn)) x :: runThrough(List(z) ::: rest)
           else x :: y :: z :: runThrough(rest)
         case a @ _ => a
       }
@@ -60,6 +63,8 @@ object GpxTrimmer {
       points = runThrough(points)
       println("Num Points: " + points.size + ", Min turn: " + minTurn)
       minTurn += turnInc
+      if(minTurn > 359.0)
+        throw new RuntimeException("Turn is too big: " + points)
     }
     points
   }
@@ -95,6 +100,9 @@ object GpxTrimmer {
   object Point{ def apply(lat: Double, long: Double) = new Point(lat,long) }
   case class Point(lat: Double, long: Double,name: String){ 
    def this(lat: Double, long: Double) = this(lat, long, "") 
+   def == (p : Point) = {
+    Math.abs(lat - p.lat) < 0.000000001 && Math.abs(long - p.long) < 0.00000001
+   }
    def toXml() : Node = {
      <rtept lat={lat.toString()} lon={long.toString()}>
        <name>{name}</name>

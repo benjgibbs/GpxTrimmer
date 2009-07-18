@@ -4,11 +4,10 @@ The fantastic GpedToGpx script creates a lot of points.  My poor old garmin cann
 This is a work in progress.
 
 To Do:
-
-* Fix the turn calculation - still somehting strange going on here
 * don't hardcode the input
 * Work out how to link it to the script
 
 Done:
 * Output the resut into xml
+* Fix the turn calculation - still somehting strange going on here
 
