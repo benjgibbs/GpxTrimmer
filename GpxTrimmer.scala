@@ -14,7 +14,7 @@ object GpxTrimmer {
 
     val inFile="/Users/benjgibbs/Desktop/toLyndhurst.gpx"
     val outFile=inFile.replace(".gpx", "_truncated.gpx")
-    val name=
+    val name="To Lyndhurst"
     
     val xml = XML.loadFile("/Users/benjgibbs/Desktop/toLyndhurst.gpx")
 
@@ -23,8 +23,7 @@ object GpxTrimmer {
     for(x <- (xml \ "rte" \ "rtept"))
       allPoints = Point(pos(x,"lat"), pos(x,"lon"), name(x)) :: allPoints
 
-    allPoints = allPoints.reverse
-    XML.save(outFile,updateXml(xml, "To Lyndhurst",filterPoints(allPoints)))
+    XML.save(outFile,updateXml(xml,name,filterPoints(allPoints.reverse)))
     println("Wrote: " + outFile)
   }
   
