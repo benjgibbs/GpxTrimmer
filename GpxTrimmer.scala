@@ -12,11 +12,11 @@ object GpxTrimmer {
   def main(args: Array[String]) = {
     test()
 
-    val inFile="/Users/benjgibbs/Desktop/toLyndhurst.gpx"
-    val outFile=inFile.replace(".gpx", "_truncated.gpx")
-    val rteName="To Lyndhurst"
+    val inFile="/Users/benjgibbs/Code/GpxTrimmer/input/"+ args(0) + ".gpx"
+    val outFile="/Users/benjgibbs/Code/GpxTrimmer/output/"+args(0) + "_truncated.gpx"
+    val rteName=args(0)
     
-    val xml = XML.loadFile("/Users/benjgibbs/Desktop/toLyndhurst.gpx")
+    val xml = XML.loadFile(inFile)
 
     var allPoints : List[Point] = Nil
     
