@@ -5,6 +5,8 @@ import scala.xml.XML
 import scala.xml.Elem
 import scala.xml.Node
 import java.util.ArrayList
+import java.io.File
+import org.apache.commons.io.FileUtils
 
 object GpxTrimmer {
   val MAX_POINTS= 100
@@ -12,21 +14,25 @@ object GpxTrimmer {
   def main(args: Array[String]) = {
     test()
 
-    val inFile="/Users/benjgibbs/Code/GpxTrimmer/input/"+ args(0) + ".gpx"
-    val outFile="/Users/benjgibbs/Code/GpxTrimmer/output/"+args(0) + "_truncated.gpx"
-    val rteName=args(0)
+    val inputFolder = new File("inputs")
     
-    val xml = XML.loadFile(inFile)
-
-    var allPoints : List[Point] = Nil
+    for(val file <- inputFolder.listFiles()) {
+    	val xml = XML.loadFile(file)
+    			
+		var allPoints : List[Point] = Nil
+		
+		for(x <- (xml \ "rte" \ "rtept"))
+			allPoints = Point(pos(x,"lat"), pos(x,"lon"), name(x)) :: allPoints
+			
+			println(allPoints.reverse)
+    	
+    	val outName = file.getPath().replace("inputs","outputs").replace(".gpx","_truncated.gpx")
+    	val rteName = file.getName().replace(".gpx","")
+    	XML.save(outName,updateXml(xml,rteName,filterPoints(allPoints.reverse)))
+    	println("Wrote: " + outName)
+    	FileUtils.moveFile(file,new File("outputs/"+rteName+".gpx"))
+    }
     
-    for(x <- (xml \ "rte" \ "rtept"))
-      allPoints = Point(pos(x,"lat"), pos(x,"lon"), name(x)) :: allPoints
-
-    println(allPoints.reverse)
-
-    XML.save(outFile,updateXml(xml,rteName,filterPoints(allPoints.reverse)))
-    println("Wrote: " + outFile)
   }
   
   def updateXml(xml: Node, name: String, points: List[Point]) : Node= {
